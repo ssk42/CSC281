@@ -15,10 +15,10 @@ public class BadEllipseComponent extends JComponent {
     private final double xCoord, yCoord, rectWidth, rectHeight;
 
     public BadEllipseComponent(double x, double y, double width, double height) {
-        xCoord = x;
-        yCoord = y;
-        rectWidth = width;
-        rectHeight = height;
+        this.xCoord = x;
+        this.yCoord = y;
+        this.rectWidth = width;
+        this.rectHeight = height;
 
         this.setLocation(0, 0);
         this.setSize(400, 400);
@@ -26,7 +26,7 @@ public class BadEllipseComponent extends JComponent {
 
     @Override
     protected void paintComponent(Graphics graphics) {
-        //super.paintComponent(graphics);
+        super.paintComponent(graphics);
 
         // really the Graphics object is a Graphics2D
         Graphics2D graphics2D = (Graphics2D) graphics;

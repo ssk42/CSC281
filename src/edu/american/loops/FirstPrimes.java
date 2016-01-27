@@ -26,8 +26,12 @@ public class FirstPrimes {
         for (int potentialPrime = 2; numPrimesFound < numPrimesToFind; potentialPrime++) {
 
             boolean divisibleByPrevPrimes = false;
-            // search through the
-            for (int primeIndex = 0; primeIndex < numPrimesFound && !divisibleByPrevPrimes; primeIndex++) {
+            // search through the previously found primes for a possible divisor
+            for (int primeIndex = 0;
+                 !divisibleByPrevPrimes &&
+                         primeIndex < numPrimesFound &&
+                         primeArray[primeIndex] <= Math.sqrt(potentialPrime);
+                 primeIndex++) {
                 if (potentialPrime % primeArray[primeIndex] == 0)
                     divisibleByPrevPrimes = true;
             }

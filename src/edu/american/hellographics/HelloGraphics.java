@@ -26,8 +26,9 @@ public class HelloGraphics {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        for (int i = 0; i < 20; i++)
-            //frame.add(new BadEllipseComponent(
+        frame.add(new EllipseComponent());
+
+        for (int i = 0; i < 200; i++)
             frame.add(new EllipseComponent(
                     (Math.random() * 200)+40,
                     (Math.random() * 200)+40,

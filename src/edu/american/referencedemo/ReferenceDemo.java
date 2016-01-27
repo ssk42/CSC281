@@ -44,6 +44,19 @@ class ReferenceDemo {
         System.out.println(firstString.getString());
         System.out.println(secondString.getString());
 
+        secondString = null;
+
+        try {
+            System.out.println(secondString.getString());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            System.err.println("secondString was null");
+        }
+
+        firstString = null;
+
+        // now the StringContainer is unreferenced
+
     }
 
 }

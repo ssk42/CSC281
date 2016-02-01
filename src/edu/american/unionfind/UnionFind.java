@@ -73,8 +73,4 @@ public abstract class UnionFind {
      */
     public abstract int find(int p);
 
-    public void runTest() {
-
-    }
-
 }

@@ -27,7 +27,7 @@ public class QuadraticEquation {
      * @return true if quadratic equation real solutions
      */
     public boolean hasRealSolutions() {
-        return Math.pow(b,2)-4*a*c >= 0;
+        return Math.pow(b, 2) - 4 * a * c >= 0;
     }
 
     /**
@@ -37,8 +37,8 @@ public class QuadraticEquation {
      * @return real solution to the quadratic equation, or NaN if none exist
      */
     public double getSolution1() {
-        if(this.hasRealSolutions())
-            return (-b+Math.sqrt(Math.pow(b,2)-4*a*c))/(2*a);
+        if (this.hasRealSolutions())
+            return (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
         else
             return Double.NaN;
     }
@@ -50,8 +50,8 @@ public class QuadraticEquation {
      * @return real solution to the quadratic equation, or NaN if none exist
      */
     public double getSolution2() {
-        if(this.hasRealSolutions())
-            return (-b-Math.sqrt(Math.pow(b,2)-4*a*c))/(2*a);
+        if (this.hasRealSolutions())
+            return (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
         else
             return Double.NaN;
     }

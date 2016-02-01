@@ -1,7 +1,5 @@
 package edu.american.homework.one;
 
-import edu.american.homework.one.QuadraticEquation;
-
 import java.util.Scanner;
 
 /**

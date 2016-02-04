@@ -24,6 +24,12 @@ public class MonteCarloTester {
     static final int CONNECTED_TO_SOURCE = 2;
     private int[][] openCells;
 
+    /**
+     *
+     * @param classType a class which extends UnionFind
+     * @param showUpdates display intermediary updates, or just final one
+     * @param numRuns number of times to run the test
+     */
     public void monteCarlo(Class classType, boolean showUpdates, int numRuns) {
 
         Stopwatch stopwatch = new Stopwatch();
@@ -38,13 +44,14 @@ public class MonteCarloTester {
             /** a new UnionType out of it. This is relatively deep    **/
             /** voodoo and probably should be avoided in practice.    **/
             /***********************************************************/
-            Constructor constructor = null;
-            UnionFind unionFind = null;
+            UnionFind sourceSinkUnionFind = null;
+            UnionFind sourceOnlyUnionFind = null;
             try {
                 // the following is a comment to stop IntelliJ IDEA from complaining:
                 //noinspection unchecked
-                constructor = classType.getConstructor(int.class);
-                unionFind = (UnionFind) constructor.newInstance(2+gridArea);
+                Constructor constructor = classType.getConstructor(int.class);
+                sourceSinkUnionFind = (UnionFind) constructor.newInstance(2+gridArea);
+                sourceOnlyUnionFind = (UnionFind) constructor.newInstance(2+gridArea);
 
             } catch (NoSuchMethodException | IllegalAccessException |
                     InstantiationException | InvocationTargetException e) {
@@ -57,7 +64,7 @@ public class MonteCarloTester {
             openCells = new int[gridXSize][gridYSize]; // inits to CLOSED=0
 
             // set up the display class
-            Display display = new Display(openCells, unionFind);
+            Display display = new Display(openCells, sourceOnlyUnionFind);
             display.updateImage();
 
             // and a JFrame to put the display in
@@ -90,29 +97,38 @@ public class MonteCarloTester {
                 numOpenCells++;
 
                 // connect it to its open horizontal neighbors
-                if (x == 0) { // on the left
-                    if (open(x+1, y)) unionFind.union(translate(x, y), translate(x+1, y));
-                } else if (x == gridXSize-1) { // on the right
-                    if (open(x-1, y)) unionFind.union(translate(x, y), translate(x-1, y));
-                } else {
-                    if (open(x+1, y)) unionFind.union(translate(x, y), translate(x+1, y));
-                    if (open(x-1, y)) unionFind.union(translate(x, y), translate(x-1, y));
+                if (x+1 < gridXSize && open(x+1, y)) {
+                    sourceSinkUnionFind.union(translate(x, y), translate(x+1, y));
+                    sourceOnlyUnionFind.union(translate(x, y), translate(x+1, y));
+                }
+
+                if (x >= 1 && open(x-1, y)) {
+                    sourceSinkUnionFind.union(translate(x, y), translate(x-1, y));
+                    sourceOnlyUnionFind.union(translate(x, y), translate(x-1, y));
                 }
 
                 // connect it to its open vertical neighbors (inc. source and sink)
-                if (y == 0) { // on the top
-                    unionFind.union(translate(x, y), sourceID);
-                    if (open(x, y+1)) unionFind.union(translate(x, y), translate(x, y+1));
-                } else if (y == gridYSize-1) { // on the bottom
-                    if (open(x, y-1)) unionFind.union(translate(x, y), translate(x, y-1));
-                    unionFind.union(translate(x, y), sinkID);
-                } else {
-                    if (open(x, y+1)) unionFind.union(translate(x, y), translate(x, y+1));
-                    if (open(x, y-1)) unionFind.union(translate(x, y), translate(x, y-1));
+                if (y == 0) {
+                    sourceSinkUnionFind.union(translate(x, y), sourceID);
+                    sourceOnlyUnionFind.union(translate(x, y), sourceID);
                 }
 
+                if (y == gridYSize-1)
+                    sourceSinkUnionFind.union(translate(x, y), sinkID);
+
+                if (y+1 < gridYSize && open(x, y+1)) {
+                    sourceSinkUnionFind.union(translate(x, y), translate(x, y+1));
+                    sourceOnlyUnionFind.union(translate(x, y), translate(x, y+1));
+                }
+
+                if (y >= 1 && open(x, y-1)) {
+                    sourceSinkUnionFind.union(translate(x, y), translate(x, y-1));
+                    sourceOnlyUnionFind.union(translate(x, y), translate(x, y-1));
+                }
+
+
                 // see if the source and sink are connected
-                connected = unionFind.connected(sourceID, sinkID);
+                connected = sourceSinkUnionFind.connected(sourceID, sinkID);
 
                 // redraw the image
                 if (showUpdates) display.updateImage();

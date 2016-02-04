@@ -41,7 +41,7 @@ public class QuickFind extends UnionFind {
     }
 
     public static void main(String[] args) {
-        (new MonteCarloTester()).monteCarlo(QuickFind.class, false, 50);
+        (new MonteCarloTester()).monteCarlo(QuickFind.class, false, 1);
     }
 
 }

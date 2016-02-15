@@ -6,7 +6,7 @@ package edu.american.referencedemo;
  * @author knappa
  * @version 1.0
  */
-class StringContainer {
+public class StringContainer {
 
     private String containedString;
 

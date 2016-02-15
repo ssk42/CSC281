@@ -115,9 +115,9 @@ public class LightsOut extends JPanel {
         this.setLayout(new BorderLayout());
 
         // set up the Randomize button
-        JButton button = new JButton("Randomize");
-        this.add(button, BorderLayout.SOUTH);
-        button.addActionListener(new ActionListener() {
+        JButton randomizeButton = new JButton("Randomize");
+        this.add(randomizeButton, BorderLayout.SOUTH);
+        randomizeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 for (int i = 0; i < SIZE; i++)
@@ -146,10 +146,10 @@ public class LightsOut extends JPanel {
         // connect the GridElements
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (i > 0) gridElements[i][j].setWest(gridElements[i - 1][j]);
-                if (i < SIZE - 1) gridElements[i][j].setEast(gridElements[i + 1][j]);
-                if (j > 0) gridElements[i][j].setSouth(gridElements[i][j - 1]);
-                if (j < SIZE - 1) gridElements[i][j].setNorth(gridElements[i][j + 1]);
+                if (i > 0) gridElements[i][j].setNorth(gridElements[i - 1][j]);
+                if (i < SIZE - 1) gridElements[i][j].setSouth(gridElements[i + 1][j]);
+                if (j > 0) gridElements[i][j].setWest(gridElements[i][j - 1]);
+                if (j < SIZE - 1) gridElements[i][j].setEast(gridElements[i][j + 1]);
             }
         }
 
@@ -162,7 +162,7 @@ public class LightsOut extends JPanel {
 
         JFrame frame = new JFrame();
         frame.setTitle("Lights Out!");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(new LightsOut());
 
         // set size based on calls to child components

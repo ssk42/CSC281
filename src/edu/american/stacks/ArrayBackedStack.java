@@ -12,6 +12,7 @@ public class ArrayBackedStack<Item> implements Stack<Item> {
 
     public ArrayBackedStack(int size) {
         this.size = size;
+        //noinspection unchecked
         stackArray = (Item[]) new Object[size];
         top = -1;
     }
@@ -19,7 +20,7 @@ public class ArrayBackedStack<Item> implements Stack<Item> {
     /**
      * for testing
      *
-     * @param args
+     * @param args unused
      */
     public static void main(String[] args) {
 
@@ -72,5 +73,12 @@ public class ArrayBackedStack<Item> implements Stack<Item> {
         return top == -1;
     }
 
-
+    @Override
+    public String toString() {
+        String retVal = "";
+        for (int i = 0; i <= top; i++) {
+            retVal += "("+stackArray[i]+")";
+        }
+        return retVal;
+    }
 }

@@ -1,7 +1,8 @@
 package edu.american.stacks;
 
 /**
- * Created by knappa on 2/11/16.
+ * @author knappa
+ * @version 1.0
  */
 public interface Stack<Item> {
 

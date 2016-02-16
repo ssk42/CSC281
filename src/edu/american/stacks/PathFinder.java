@@ -160,14 +160,19 @@ public class PathFinder {
         // "path" contains the path in the wrong direction, reverse it
         // print while you do it
         Stack<GridPoint> reversedPath = new ArrayBackedStack<GridPoint>(ROWS*COLUMNS);
-
+        GridPoint prev = null;
         for (GridPoint point : path) {
             reversedPath.push(point);
-            maze.setVisiting(point.row, point.col);
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException ignored) {
+
+                maze.setVisiting(point.row, point.col);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException ignored) {
+                }
+            if(prev != null) {
+                maze.addPathToTreasure(prev,point);
             }
+            prev = point;
         }
 
         maze.visitingOff();

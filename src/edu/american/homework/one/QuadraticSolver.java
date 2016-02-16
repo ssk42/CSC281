@@ -12,12 +12,11 @@ public class QuadraticSolver {
 
         Scanner scanner = new Scanner(System.in);
 
-        QuadraticEquation quadraticEquation =
-                new QuadraticEquation(
-                        scanner.nextDouble(),
-                        scanner.nextDouble(),
-                        scanner.nextDouble()
-                );
+        double a = scanner.nextDouble();
+        double b = scanner.nextDouble();
+        double c = scanner.nextDouble();
+
+        QuadraticEquation quadraticEquation = new QuadraticEquation(a,b,c);
 
         if (quadraticEquation.hasRealSolutions()) {
 
@@ -25,6 +24,8 @@ public class QuadraticSolver {
             System.out.println(quadraticEquation.getSolution2());
 
         } else System.out.println("No real solutions");
+
+        System.exit(0);
 
     }
 

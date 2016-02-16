@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class PathFinder {
 
-    static final int ROWS = 10, COLUMNS = 10;
+    static final int ROWS = 10, COLUMNS = 20;
     boolean[][] checkedArray;
     Maze maze;
     private int robotRow;
@@ -34,11 +34,14 @@ public class PathFinder {
 
         generateMaze();
 
-        Stack<GridPoint> path = findPath();
+        Iterable<GridPoint> path = findPath();
 
         moveRobot(path);
     }
 
+    /**
+     * setup the maze, randomly
+     */
     private void generateMaze() {
 
         maze = new Maze(ROWS, COLUMNS);
@@ -72,7 +75,12 @@ public class PathFinder {
 
     }
 
-    private Stack<GridPoint> findPath() {
+    /**
+     * Depth-first search
+     *
+     * @return if it exists, a path connecting the robot to the treasure
+     */
+    public Iterable<GridPoint> findPath() {
 
         checkedArray = new boolean[ROWS][COLUMNS];
 
@@ -132,6 +140,7 @@ public class PathFinder {
                     assert false;
                 }
             }
+
         } while (!maze.treasureCell(current.row, current.col) && !path.isEmpty());
 
         path.push(current);
@@ -140,32 +149,35 @@ public class PathFinder {
         // "path" contains the path in the wrong direction, reverse it
         // print while you do it
         Stack<GridPoint> reversedPath = new ArrayBackedStack<GridPoint>(ROWS*COLUMNS);
-        while (!path.isEmpty())
+
+        for (GridPoint point : path) {
+            reversedPath.push(point);
+            maze.setVisiting(point.row, point.col);
             try {
-                GridPoint point = path.pop();
-                maze.setVisiting(point.row, point.col);
                 Thread.sleep(20);
-                reversedPath.push(point);
-            } catch (StackEmptyException | InterruptedException ignored) {
-            }
+            } catch (InterruptedException ignored) {}
+        }
 
         maze.visitingOff();
 
         return reversedPath;
     }
 
-    private void moveRobot(Stack<GridPoint> path) {
+    /**
+     * moves the robot along the specified path
+     *
+     * @param path the path to follow
+     */
+    private void moveRobot(Iterable<GridPoint> path) {
 
         GridPoint point = null;
 
-        while (!path.isEmpty()) {
-
+        for (GridPoint pt : path) {
+                point = pt;
             try {
-                point = path.pop();
                 maze.moveRobot(point.row, point.col);
-            } catch (StackEmptyException | Maze.InvalidMoveException ignored) {
+            } catch (Maze.InvalidMoveException ignored) {
             }
-
         }
 
         if (point != null && maze.treasureCell(point.row, point.col)) {
@@ -183,7 +195,10 @@ public class PathFinder {
 
     }
 
-    private class GridPoint {
+    /**
+     * a wrapper for points in the maze
+     */
+    public class GridPoint {
         int row, col;
 
         GridPoint(int r, int c) {

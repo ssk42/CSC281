@@ -102,6 +102,9 @@ public class Maze extends JFrame implements ActionListener {
         timer = new Timer(TIMER_FREQ, this);
     }
 
+    /**
+     * @param args ignored
+     */
     public static void main(String[] args) {
 
         int rows = 10, cols = 20;
@@ -427,6 +430,5 @@ public class Maze extends JFrame implements ActionListener {
         }
     }
 
-    public class InvalidMoveException extends Exception {
-    }
+    public class InvalidMoveException extends Exception {}
 }

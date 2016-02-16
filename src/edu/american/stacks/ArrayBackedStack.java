@@ -1,5 +1,8 @@
 package edu.american.stacks;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * @author knappa
  * @version 1.0
@@ -81,4 +84,52 @@ public class ArrayBackedStack<Item> implements Stack<Item> {
         }
         return retVal;
     }
+
+    /**
+     * Returns an iterator over elements of type {@code T}.
+     *
+     * @return an Iterator.
+     */
+    @Override
+    public Iterator<Item> iterator() {
+        return new StackIterator();
+    }
+
+    private class StackIterator implements Iterator<Item> {
+
+        int next;
+
+        public StackIterator() {
+            next = top;
+        }
+
+        /**
+         * Returns {@code true} if the iteration has more elements. (In other words, returns {@code true} if {@link
+         * #next} would return an element rather than throwing an exception.)
+         *
+         * @return {@code true} if the iteration has more elements
+         */
+        @Override
+        public boolean hasNext() {
+            return next != -1;
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element in the iteration
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
+        @Override
+        public Item next() {
+
+            if (!hasNext()) throw new NoSuchElementException();
+
+            next--;
+
+            return stackArray[next+1];
+        }
+    }
+
+
 }

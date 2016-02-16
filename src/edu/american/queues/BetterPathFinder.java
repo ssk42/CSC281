@@ -107,6 +107,11 @@ public class BetterPathFinder extends PathFinder {
 
         }
 
+        if(!maze.treasureCell(current.row, current.col)) {
+            maze.visitingOff();
+            return null;
+        }
+
         // extract the path
         Stack<GridPoint> path = new ArrayBackedStack<GridPoint>(ROWS*COLUMNS);
         GridPoint prev = null;

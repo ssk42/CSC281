@@ -124,13 +124,13 @@ public class Maze extends JFrame implements ActionListener {
 
         Maze maze = new Maze(rows, cols);
 
-        for (int row = 1; row < rows-1; row++)
-            for (int col = 1; col < cols-1; col++) {
+        for (int row = 1; row < rows - 1; row++)
+            for (int col = 1; col < cols - 1; col++) {
                 if (Math.random() < 0.2)
                     maze.addWall(row, col);
             }
 
-        int robotRow = rows-1, robotCol = cols-1;
+        int robotRow = rows - 1, robotCol = cols - 1;
 
         maze.initRobot(robotRow, robotCol);
         maze.addTreasure(0, 0);
@@ -147,28 +147,28 @@ public class Maze extends JFrame implements ActionListener {
             double p = Math.random();
 
             if (p < 0.25) {
-                int newRobotRow = Math.max(0, robotRow-1);
+                int newRobotRow = Math.max(0, robotRow - 1);
                 try {
                     maze.moveRobot(newRobotRow, robotCol);
                     robotRow = newRobotRow;
                 } catch (InvalidMoveException ignored) {
                 }
             } else if (p < 0.5) {
-                int newRobotRow = Math.min(robotRow+1, rows-1);
+                int newRobotRow = Math.min(robotRow + 1, rows - 1);
                 try {
                     maze.moveRobot(newRobotRow, robotCol);
                     robotRow = newRobotRow;
                 } catch (InvalidMoveException ignored) {
                 }
             } else if (p < 0.75) {
-                int newRobotCol = Math.max(0, robotCol-1);
+                int newRobotCol = Math.max(0, robotCol - 1);
                 try {
                     maze.moveRobot(robotRow, newRobotCol);
                     robotCol = newRobotCol;
                 } catch (InvalidMoveException ignored) {
                 }
             } else {
-                int newRobotCol = Math.min(robotCol+1, cols-1);
+                int newRobotCol = Math.min(robotCol + 1, cols - 1);
                 try {
                     maze.moveRobot(robotRow, newRobotCol);
                     robotCol = newRobotCol;
@@ -272,7 +272,7 @@ public class Maze extends JFrame implements ActionListener {
         assert j < columns;
 
         // can only move to adjacent blocks
-        if (Math.abs(robotRow-i)+Math.abs(robotCol-j) > 1) {
+        if (Math.abs(robotRow - i) + Math.abs(robotCol - j) > 1) {
             System.err.println("moving too far");
             throw new InvalidMoveException();
         }
@@ -403,7 +403,7 @@ public class Maze extends JFrame implements ActionListener {
          * we definitely want this thing to be a particular size
          */
         public DisplayPanel() {
-            Dimension size = new Dimension(SQ_SIZE*columns, SQ_SIZE*rows);
+            Dimension size = new Dimension(SQ_SIZE * columns, SQ_SIZE * rows);
             setPreferredSize(size);
             setMinimumSize(size);
             setMaximumSize(size);
@@ -422,34 +422,10 @@ public class Maze extends JFrame implements ActionListener {
             g2.setStroke(new BasicStroke(1));
 
             for (int row = 1; row < rows; row++)
-                g2.drawLine(0, SQ_SIZE*row, SQ_SIZE*columns, SQ_SIZE*row);
+                g2.drawLine(0, SQ_SIZE * row, SQ_SIZE * columns, SQ_SIZE * row);
 
             for (int col = 1; col < columns; col++)
-                g2.drawLine(SQ_SIZE*col, 0, SQ_SIZE*col, SQ_SIZE*rows);
-
-
-            // draw the images
-            for (int row = 0; row < rows; row++)
-                for (int col = 0; col < columns; col++) {
-                    if (maze[row][col] == WALL) {
-                        g2.drawImage(wallImage,
-                                SQ_SIZE*col, SQ_SIZE*row,
-                                SQ_SIZE, SQ_SIZE, null);
-                    } else if (maze[row][col] == TREASURE) {
-                        g2.drawImage(treasureImage,
-                                SQ_SIZE*col, SQ_SIZE*row,
-                                SQ_SIZE, SQ_SIZE, null);
-                    } else if (maze[row][col] == ROBOT && !movingRobot) {
-                        g2.drawImage(robotImage,
-                                SQ_SIZE*col, SQ_SIZE*row,
-                                SQ_SIZE, SQ_SIZE, null);
-                    }
-
-                    if (highlight && visitingRow == row && visitingCol == col) {
-                        g2.setColor(Color.RED);
-                        g2.fillRect(SQ_SIZE*col, SQ_SIZE*row, SQ_SIZE, SQ_SIZE);
-                    }
-                }
+                g2.drawLine(SQ_SIZE * col, 0, SQ_SIZE * col, SQ_SIZE * rows);
 
             // draw the connections (from search)
 
@@ -459,34 +435,34 @@ public class Maze extends JFrame implements ActionListener {
             for (PathFinder.GridPoint pointOne : connectionsNorth.keySet()) {
                 PathFinder.GridPoint pointTwo = connectionsNorth.get(pointOne);
                 g2.drawLine(
-                        (int) (SQ_SIZE*(pointOne.col+0.5)),
-                        (int) (SQ_SIZE*(pointOne.row+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+                        (int) (SQ_SIZE * (pointOne.col + 0.5)),
+                        (int) (SQ_SIZE * (pointOne.row + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.col + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.row + 0.5)));
             }
             for (PathFinder.GridPoint pointOne : connectionsSouth.keySet()) {
                 PathFinder.GridPoint pointTwo = connectionsSouth.get(pointOne);
                 g2.drawLine(
-                        (int) (SQ_SIZE*(pointOne.col+0.5)),
-                        (int) (SQ_SIZE*(pointOne.row+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+                        (int) (SQ_SIZE * (pointOne.col + 0.5)),
+                        (int) (SQ_SIZE * (pointOne.row + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.col + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.row + 0.5)));
             }
             for (PathFinder.GridPoint pointOne : connectionsEast.keySet()) {
                 PathFinder.GridPoint pointTwo = connectionsEast.get(pointOne);
                 g2.drawLine(
-                        (int) (SQ_SIZE*(pointOne.col+0.5)),
-                        (int) (SQ_SIZE*(pointOne.row+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+                        (int) (SQ_SIZE * (pointOne.col + 0.5)),
+                        (int) (SQ_SIZE * (pointOne.row + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.col + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.row + 0.5)));
             }
             for (PathFinder.GridPoint pointOne : connectionsWest.keySet()) {
                 PathFinder.GridPoint pointTwo = connectionsWest.get(pointOne);
                 g2.drawLine(
-                        (int) (SQ_SIZE*(pointOne.col+0.5)),
-                        (int) (SQ_SIZE*(pointOne.row+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+                        (int) (SQ_SIZE * (pointOne.col + 0.5)),
+                        (int) (SQ_SIZE * (pointOne.row + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.col + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.row + 0.5)));
             }
 
             // draw the path to the treasure
@@ -496,22 +472,45 @@ public class Maze extends JFrame implements ActionListener {
             for (PathFinder.GridPoint pointOne : pathToTreasure.keySet()) {
                 PathFinder.GridPoint pointTwo = pathToTreasure.get(pointOne);
                 g2.drawLine(
-                        (int) (SQ_SIZE*(pointOne.col+0.5)),
-                        (int) (SQ_SIZE*(pointOne.row+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
-                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+                        (int) (SQ_SIZE * (pointOne.col + 0.5)),
+                        (int) (SQ_SIZE * (pointOne.row + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.col + 0.5)),
+                        (int) (SQ_SIZE * (pointTwo.row + 0.5)));
             }
 
-            // draw the robot (if moving)
 
-            if (movingRobot) {
-                double t = ((double) count)/MAX_COUNT;
-                double s = t*(2-t);
-                g2.drawImage(robotImage,
-                        (int) (SQ_SIZE*((1-s)*sourceRobotCol+s*robotCol)),
-                        (int) (SQ_SIZE*((1-s)*sourceRobotRow+s*robotRow)),
-                        SQ_SIZE, SQ_SIZE, null);
-            }
+            // draw the images
+            for (int row = 0; row < rows; row++)
+                for (int col = 0; col < columns; col++) {
+                    if (maze[row][col] == WALL) {
+                        g2.drawImage(wallImage,
+                                SQ_SIZE * col, SQ_SIZE * row,
+                                SQ_SIZE, SQ_SIZE, null);
+                    } else if (maze[row][col] == TREASURE) {
+                        g2.drawImage(treasureImage,
+                                SQ_SIZE * col, SQ_SIZE * row,
+                                SQ_SIZE, SQ_SIZE, null);
+                    } else if (maze[row][col] == ROBOT) {
+                        if (movingRobot) {
+                            double t = ((double) count) / MAX_COUNT;
+                            double s = t * (2 - t);
+                            g2.drawImage(robotImage,
+                                    (int) (SQ_SIZE * ((1 - s) * sourceRobotCol + s * robotCol)),
+                                    (int) (SQ_SIZE * ((1 - s) * sourceRobotRow + s * robotRow)),
+                                    SQ_SIZE, SQ_SIZE, null);
+                        } else {
+                            g2.drawImage(robotImage,
+                                    SQ_SIZE * col, SQ_SIZE * row,
+                                    SQ_SIZE, SQ_SIZE, null);
+                        }
+                    }
+
+                    // draw the highlighted square
+                    if (highlight && visitingRow == row && visitingCol == col) {
+                        g2.setColor(new Color(255,0,0,127)); // semi-transparent red
+                        g2.fillRect(SQ_SIZE * col, SQ_SIZE * row, SQ_SIZE, SQ_SIZE);
+                    }
+                }
 
             // required for some window managers to redraw the screen on a reasonable frame
             Toolkit.getDefaultToolkit().sync();

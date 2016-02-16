@@ -13,14 +13,11 @@ import java.io.IOException;
  */
 public class PathFinder {
 
-    static final int ROWS = 10, COLUMNS = 20;
-    boolean[][] checkedArray;
-    Maze maze;
-    private int robotRow;
-    private int robotCol;
-
-    public PathFinder() {
-    }
+    protected static final int ROWS = 10;
+    protected static final int COLUMNS = 20;
+    protected Maze maze;
+    protected int robotRow;
+    protected int robotCol;
 
     /**
      * @param args ignored
@@ -30,7 +27,7 @@ public class PathFinder {
         pathFinder.start();
     }
 
-    private void start() {
+    protected void start() {
 
         generateMaze();
 
@@ -82,7 +79,7 @@ public class PathFinder {
      */
     public Iterable<GridPoint> findPath() {
 
-        checkedArray = new boolean[ROWS][COLUMNS];
+        boolean[][] checkedArray = new boolean[ROWS][COLUMNS];
 
         Stack<GridPoint> path = new ArrayBackedStack<GridPoint>(ROWS*COLUMNS);
 
@@ -104,7 +101,10 @@ public class PathFinder {
                 path.push(current);
 
                 checkedArray[current.row-1][current.col] = true;
-                current = new GridPoint(current.row-1, current.col);
+
+                GridPoint newCurrent = new GridPoint(current.row-1, current.col);
+                maze.addConnectionNorth(current, newCurrent);
+                current = newCurrent;
 
             } else if (current.row < ROWS-1 &&
                     maze.movableCell(current.row+1, current.col) &&
@@ -113,7 +113,11 @@ public class PathFinder {
                 path.push(current);
 
                 checkedArray[current.row+1][current.col] = true;
-                current = new GridPoint(current.row+1, current.col);
+
+                GridPoint newCurrent = new GridPoint(current.row+1, current.col);
+                maze.addConnectionSouth(current, newCurrent);
+                current = newCurrent;
+
 
             } else if (current.col > 0 &&
                     maze.movableCell(current.row, current.col-1) &&
@@ -122,7 +126,11 @@ public class PathFinder {
                 path.push(current);
 
                 checkedArray[current.row][current.col-1] = true;
-                current = new GridPoint(current.row, current.col-1);
+
+                GridPoint newCurrent = new GridPoint(current.row, current.col-1);
+                maze.addConnectionWest(current, newCurrent);
+                current = newCurrent;
+
 
             } else if (current.col < COLUMNS-1 &&
                     maze.movableCell(current.row, current.col+1) &&
@@ -131,7 +139,10 @@ public class PathFinder {
                 path.push(current);
 
                 checkedArray[current.row][current.col+1] = true;
-                current = new GridPoint(current.row, current.col+1);
+
+                GridPoint newCurrent = new GridPoint(current.row, current.col+1);
+                maze.addConnectionEast(current, newCurrent);
+                current = newCurrent;
 
             } else {
                 try {
@@ -155,7 +166,8 @@ public class PathFinder {
             maze.setVisiting(point.row, point.col);
             try {
                 Thread.sleep(20);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
         }
 
         maze.visitingOff();
@@ -170,10 +182,12 @@ public class PathFinder {
      */
     private void moveRobot(Iterable<GridPoint> path) {
 
+        if (path == null) return;
+
         GridPoint point = null;
 
         for (GridPoint pt : path) {
-                point = pt;
+            point = pt;
             try {
                 maze.moveRobot(point.row, point.col);
             } catch (Maze.InvalidMoveException ignored) {
@@ -199,11 +213,23 @@ public class PathFinder {
      * a wrapper for points in the maze
      */
     public class GridPoint {
-        int row, col;
+        public int row;
+        public int col;
 
-        GridPoint(int r, int c) {
+        public GridPoint(int r, int c) {
             row = r;
             col = c;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+
+            if (!(other instanceof GridPoint)) return false;
+
+            GridPoint otherPoint = (GridPoint) other;
+
+            return otherPoint.row == this.row && otherPoint.col == this.col;
+
         }
 
         @Override

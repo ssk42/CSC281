@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @author knappa
@@ -35,6 +36,8 @@ public class Maze extends JFrame implements ActionListener {
     private int visitingRow, visitingCol;
     private boolean highlight = false;
 
+    private HashMap<PathFinder.GridPoint, PathFinder.GridPoint> connectionsNorth, connectionsSouth, connectionsEast, connectionsWest;
+
     /**
      * Constructor
      *
@@ -42,6 +45,11 @@ public class Maze extends JFrame implements ActionListener {
      * @param columns number of columns in the maze
      */
     public Maze(int rows, int columns) {
+
+        connectionsNorth = new HashMap<PathFinder.GridPoint, PathFinder.GridPoint>();
+        connectionsSouth = new HashMap<PathFinder.GridPoint, PathFinder.GridPoint>();
+        connectionsEast = new HashMap<PathFinder.GridPoint, PathFinder.GridPoint>();
+        connectionsWest = new HashMap<PathFinder.GridPoint, PathFinder.GridPoint>();
 
         this.rows = rows;
         this.columns = columns;
@@ -301,6 +309,22 @@ public class Maze extends JFrame implements ActionListener {
 
     }
 
+    public void addConnectionNorth(PathFinder.GridPoint pointOne, PathFinder.GridPoint pointTwo) {
+        connectionsNorth.put(pointOne, pointTwo);
+    }
+
+    public void addConnectionSouth(PathFinder.GridPoint pointOne, PathFinder.GridPoint pointTwo) {
+        connectionsSouth.put(pointOne, pointTwo);
+    }
+
+    public void addConnectionEast(PathFinder.GridPoint pointOne, PathFinder.GridPoint pointTwo) {
+        connectionsEast.put(pointOne, pointTwo);
+    }
+
+    public void addConnectionWest(PathFinder.GridPoint pointOne, PathFinder.GridPoint pointTwo) {
+        connectionsWest.put(pointOne, pointTwo);
+    }
+
     /**
      * turn on highlighting of a cell
      *
@@ -416,6 +440,41 @@ public class Maze extends JFrame implements ActionListener {
                     }
                 }
 
+            g.setColor(Color.GREEN);
+            for (PathFinder.GridPoint pointOne : connectionsNorth.keySet()) {
+                PathFinder.GridPoint pointTwo = connectionsNorth.get(pointOne);
+                g.drawLine(
+                        (int) (SQ_SIZE*(pointOne.col+0.5)),
+                        (int) (SQ_SIZE*(pointOne.row+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+            }
+            for (PathFinder.GridPoint pointOne : connectionsSouth.keySet()) {
+                PathFinder.GridPoint pointTwo = connectionsSouth.get(pointOne);
+                g.drawLine(
+                        (int) (SQ_SIZE*(pointOne.col+0.5)),
+                        (int) (SQ_SIZE*(pointOne.row+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+            }
+            for (PathFinder.GridPoint pointOne : connectionsEast.keySet()) {
+                PathFinder.GridPoint pointTwo = connectionsEast.get(pointOne);
+                g.drawLine(
+                        (int) (SQ_SIZE*(pointOne.col+0.5)),
+                        (int) (SQ_SIZE*(pointOne.row+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+            }
+            for (PathFinder.GridPoint pointOne : connectionsWest.keySet()) {
+                PathFinder.GridPoint pointTwo = connectionsWest.get(pointOne);
+                g.drawLine(
+                        (int) (SQ_SIZE*(pointOne.col+0.5)),
+                        (int) (SQ_SIZE*(pointOne.row+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.col+0.5)),
+                        (int) (SQ_SIZE*(pointTwo.row+0.5)));
+            }
+
+
             if (movingRobot) {
                 double t = ((double) count)/MAX_COUNT;
                 double s = t*(2-t);
@@ -430,5 +489,6 @@ public class Maze extends JFrame implements ActionListener {
         }
     }
 
-    public class InvalidMoveException extends Exception {}
+    public class InvalidMoveException extends Exception {
+    }
 }

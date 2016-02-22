@@ -34,6 +34,50 @@ public class InsertionSort {
 
     }
 
+    public static void sort(double[] array) {
+
+        if (array == null) return;
+        if (array.length == 0 || array.length == 1) return;
+
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i - 1; j >= 0 && array[j + 1] < array[j]; j--) {
+                double temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+            }
+        }
+
+    }
+
+    public static void sort(int[] array) {
+
+        if (array == null) return;
+        if (array.length == 0 || array.length == 1) return;
+
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i - 1; j >= 0 && array[j + 1] < array[j]; j--) {
+                int temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+            }
+        }
+
+    }
+
+    public static <Item extends Comparable<? super Item>> void sort(Item[] array) {
+
+        if (array == null) return;
+        if (array.length == 0 || array.length == 1) return;
+
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i - 1; j >= 0 && array[j + 1].compareTo(array[j]) < 0; j--) {
+                Item temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+            }
+        }
+
+    }
 
     /**
      * @param list   list of comparable objects
@@ -45,11 +89,11 @@ public class InsertionSort {
         if (list.size() == 0 || list.size() == 1) return;
 
         for (int i = 1; i < list.size(); i++) {
-            for (int j = i-1; j >= 0 &&
-                    list.get(j+1).compareTo(list.get(j)) < 0; j--) {
+            for (int j = i - 1; j >= 0 &&
+                    list.get(j + 1).compareTo(list.get(j)) < 0; j--) {
                 Item temp = list.get(j);
-                list.set(j, list.get(j+1));
-                list.set(j+1, temp);
+                list.set(j, list.get(j + 1));
+                list.set(j + 1, temp);
             }
         }
     }
@@ -60,11 +104,11 @@ public class InsertionSort {
         if (list.size() == 0 || list.size() == 1) return;
 
         for (int i = 1; i < list.size(); i++) {
-            for (int j = i-1; j >= 0 &&
-                    comparator.compare(list.get(j+1), list.get(j)) < 0; j--) {
+            for (int j = i - 1; j >= 0 &&
+                    comparator.compare(list.get(j + 1), list.get(j)) < 0; j--) {
                 Item temp = list.get(j);
-                list.set(j, list.get(j+1));
-                list.set(j+1, temp);
+                list.set(j, list.get(j + 1));
+                list.set(j + 1, temp);
             }
         }
     }

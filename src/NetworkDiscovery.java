@@ -30,6 +30,12 @@ public class NetworkDiscovery {
     private boolean broadcasting;
     private ServerFinder serverFinder;
 
+    /**
+     * Construct a class to find server/client/peers for some network service
+     *
+     * @param port        port
+     * @param serviceName String specifying the name of the service
+     */
     public NetworkDiscovery(int port, String serviceName) {
         SYN = "SYN_" + serviceName;
         ACK = "ACK_" + serviceName;
@@ -38,7 +44,7 @@ public class NetworkDiscovery {
         serverAddresses = new HashSet<>();
         hostAddresses = new HashSet<>();
 
-        // add our host addresses
+        /* add our host address(es) to our "ignore" list */
         try {
             Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
@@ -67,6 +73,12 @@ public class NetworkDiscovery {
         MTU = Math.max(maxMTU, 1500);
     }
 
+
+    /**
+     * testing
+     *
+     * @param args command line: server/client specifier
+     */
     public static void main(String[] args) {
         if (args.length > 0) {
             NetworkDiscovery networkDiscovery = new NetworkDiscovery(8888, "TEST");
@@ -88,6 +100,9 @@ public class NetworkDiscovery {
         }
     }
 
+    /**
+     * start listening for clients
+     */
     public void startListening() {
         listening = true;
         if (listeningThread != null) {
@@ -99,19 +114,37 @@ public class NetworkDiscovery {
         }
     }
 
+
+    /**
+     * stop listening for clients
+     */
     public void stopListening() {
         listening = false;
         listeningThread.interrupt();
     }
 
+    /**
+     * @return a set containing the current found clients - this set is not updated when new clients are found
+     */
     public Set<InetAddress> foundClientAddresses() {
-        return clientAddresses;
+        /* return a copy */
+        Set<InetAddress> foundAddresses = new HashSet<InetAddress>(clientAddresses.size());
+        foundAddresses.addAll(clientAddresses);
+        return foundAddresses;
     }
 
+    /**
+     * start searching for a server
+     */
     public void startBroadcastingForServers() {
         startBroadcastingForServers(1);
     }
 
+    /**
+     * start searching for {@code numServer} servers
+     *
+     * @param numServers number of servers to search for
+     */
     public void startBroadcastingForServers(int numServers) {
         broadcasting = true;
         if (serverFinderThread != null) {
@@ -124,17 +157,23 @@ public class NetworkDiscovery {
         serverFinderThread.start();
     }
 
+    /**
+     * stop searching for servers
+     */
     public void stopBroadcasting() {
         broadcasting = false;
         serverFinderThread.interrupt();
     }
 
+    /**
+     * @return a set containing the current found servers - this set is not updated when new servers are found
+     */
     public Set<InetAddress> foundServerAddresses() {
         return serverAddresses;
     }
 
     /**
-     * find some number of servers via UDP broadcast
+     * a class to find some number of servers via UDP broadcast
      */
     private class ServerFinder implements Runnable {
         private int numServersToFind;
@@ -224,7 +263,7 @@ public class NetworkDiscovery {
     }
 
     /**
-     * listen for clients via UDP broadcast
+     * a class to listen for clients via UDP broadcast
      */
     private class ClientFinder implements Runnable {
         @Override

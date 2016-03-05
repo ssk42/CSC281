@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 /**
  * Created by knappa on 2/25/16.
- */
+ *//*
 public class ThreeSum {
 
 
@@ -55,3 +55,4 @@ public class ThreeSum {
     }
 
 }
+*/

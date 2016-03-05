@@ -241,7 +241,8 @@ public class NetworkDiscovery {
                     socket.receive(receivePacket);
 
                     String message = new String(receivePacket.getData()).trim();
-                    System.out.println("received: " + message);
+                    System.out.println("received: " + message +
+                            " from:" + receivePacket.getAddress());
                     if (message.equals(ACK)) {
                         serverAddresses.add(receivePacket.getAddress());
                         System.out.println("found server: " + receivePacket.getAddress());
@@ -290,7 +291,8 @@ public class NetworkDiscovery {
 
                 /* determine if this is a packet from someone else (if appropriate), containing the signal */
                 String message = new String(packet.getData()).trim();
-                System.out.println("received packet: " + message);
+                System.out.println("received packet: " + message +
+                        " from: " + packet.getAddress());
                 if (message.equals(SYN) && !hostAddresses.contains(packet.getAddress())) {
 
                     /* send ack */

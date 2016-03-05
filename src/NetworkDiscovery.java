@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author knappa
@@ -42,11 +43,11 @@ public class NetworkDiscovery {
             Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
-                for (InterfaceAddress address : networkInterface.getInterfaceAddresses())
-                    hostAddresses.add(address.getAddress());
+                hostAddresses.addAll(
+                        networkInterface.getInterfaceAddresses().stream().map(InterfaceAddress::getAddress)
+                                .collect(Collectors.toList()));
             }
-        }
-        catch (SocketException ignored) {}
+        } catch (SocketException ignored) {}
 
         /* find the max MTU on our (valid, active, non-loopback - if appropriate) interfaces */
         int maxMTU = 0;
@@ -59,8 +60,7 @@ public class NetworkDiscovery {
                     maxMTU = Math.max(maxMTU, networkInterface.getMTU());
                 }
             }
-        }
-        catch (SocketException ignored) {}
+        } catch (SocketException ignored) {}
         /* MTU should be at least as big as an ethernet packet
          * https://en.wikipedia.org/wiki/Maximum_transmission_unit
          */
@@ -69,23 +69,20 @@ public class NetworkDiscovery {
 
     public static void main(String[] args) {
         if (args.length > 0) {
-            NetworkDiscovery networkDiscovery = new NetworkDiscovery(8888, "test");
+            NetworkDiscovery networkDiscovery = new NetworkDiscovery(8888, "TEST");
             try {
                 if (args[0].equals("server")) {
                     networkDiscovery.startListening();
                     Thread.sleep(60_000);
                     networkDiscovery.stopListening();
-                    for (InetAddress address : networkDiscovery.foundClientAddresses())
-                        System.out.println(address);
+                    networkDiscovery.foundClientAddresses().forEach(System.out::println);
                 } else if (args[0].equals("client")) {
                     networkDiscovery.startBroadcastingForServers();
                     Thread.sleep(60_000);
                     networkDiscovery.stopBroadcasting();
-                    for (InetAddress address : networkDiscovery.foundServerAddresses())
-                        System.out.println(address);
+                    networkDiscovery.foundServerAddresses().forEach(System.out::println);
                 }
-            }
-            catch (InterruptedException ignored) { }
+            } catch (InterruptedException ignored) { }
         } else {
             System.out.println("tell me what to do: should I be the *client* or *server*");
         }
@@ -150,8 +147,6 @@ public class NetworkDiscovery {
         public void run() {
             try {
 
-                //System.out.println("b");
-
                 DatagramSocket socket = new DatagramSocket(port);
                 socket.setBroadcast(true);
 
@@ -168,6 +163,7 @@ public class NetworkDiscovery {
                                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
                                         InetAddress.getByName("255.255.255.255"), port);
                                 System.out.println("Broadcast to 255.255.255.255");
+                                System.out.println("sending: " + new String(sendData));
                                 socket.send(sendPacket);
 
                                 /* broadcast on the specific local netmask of each interface */
@@ -182,13 +178,13 @@ public class NetworkDiscovery {
                                             if (broadcast != null) {
                                                 sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, port);
                                                 System.out.println("Broadcast to " + broadcast);
+                                                System.out.println("sending: " + new String(sendData));
                                                 socket.send(sendPacket);
                                             }
                                         }
                                     }
                                 }
-                            }
-                            catch (IOException ignored) { }
+                            } catch (IOException ignored) { }
 
                             /* wait one half second so we don't flood the network */
                             try { Thread.sleep(500); } catch (InterruptedException ignored) { }
@@ -206,6 +202,7 @@ public class NetworkDiscovery {
                     socket.receive(receivePacket);
 
                     String message = new String(receivePacket.getData()).trim();
+                    System.out.println("received: " + message);
                     if (message.equals(ACK)) {
                         serverAddresses.add(receivePacket.getAddress());
                         System.out.println("found server: " + receivePacket.getAddress());
@@ -220,8 +217,7 @@ public class NetworkDiscovery {
                 /* cleanup */
                 socket.close();
 
-            }
-            catch (IOException ignored) { }
+            } catch (IOException ignored) { }
         }
 
 
@@ -238,42 +234,39 @@ public class NetworkDiscovery {
             try {
                 socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"));
                 socket.setBroadcast(true);
-            }
-            catch (SocketException | UnknownHostException e) {
+            } catch (SocketException | UnknownHostException e) {
                 e.printStackTrace();
                 return;
             }
-
-            System.out.println("a");
 
             while (listening) {
 
                 // Receive packet
                 byte[] receiveBuffer = new byte[MTU];
                 DatagramPacket packet = new DatagramPacket(receiveBuffer, receiveBuffer.length);
-                try { socket.receive(packet); }
-                catch (IOException e) {
+                try { socket.receive(packet); } catch (IOException e) {
                     System.out.println("failed to receive");
                     e.printStackTrace();
                 }
 
-                System.out.println(packet);
-
-                    /* determine if this is a packet from someone else (if appropriate), containing the signal */
+                /* determine if this is a packet from someone else (if appropriate), containing the signal */
                 String message = new String(packet.getData()).trim();
+                System.out.println("received packet: " + message);
                 if (message.equals(SYN) && !hostAddresses.contains(packet.getAddress())) {
 
-                        /* send ack */
+                    /* send ack */
                     byte[] sendData = ACK.getBytes();
                     DatagramPacket sendPacket = new DatagramPacket(sendData,
                             sendData.length, packet.getAddress(), packet.getPort());
-                    try { socket.send(sendPacket); }
-                    catch (IOException e) {
+                    try {
+                        System.out.println("sending: " + new String(sendData));
+                        socket.send(sendPacket);
+                    } catch (IOException e) {
                         System.out.println("failed to send");
                         e.printStackTrace();
                     }
 
-                        /* record client */
+                    /* record client */
                     clientAddresses.add(packet.getAddress());
                     System.out.println("found client: " + packet.getAddress());
                 }

@@ -9,55 +9,37 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
 
-    private int N;
-    private int numberStored;
-    private Key[] keys;
-    private Value[] values;
+    /**
+     * inserts the key-value pair (key,value) into the hash table, overwriting any previous pair of the form (key,*) if
+     * present
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    @Override
+    public void put(Key key, Value value) {
 
-    public MyHashTable() {
-        N = 16;
-        numberStored = 0;
-        keys = (Key[]) new Object[N];
-        values = (Value[]) new Object[N];
     }
 
+    /**
+     * gets the Value corresponding to the Key, key
+     *
+     * @param key the key
+     * @returns the associated value or null if no value is associated to key
+     */
     @Override
-    public synchronized void put(Key key, Value value) {
-        if (numberStored == N) resizeArray();
-        int index = key.hashCode() % N;
-        while (keys[index] != null)
-            index = (index + 1) % N;
-        keys[index] = key;
-        values[index] = value;
-    }
-
-    @Override
-    public synchronized Value get(Key key) {
-        int baseIndex = key.hashCode() % N;
-        for (int i = 0; i < N; i++) {
-            if (keys[(baseIndex + i) % N] == null) {
-                return null;
-            } else if (keys[(baseIndex + i) % N].equals(key)) {
-                Value retVel = values[(baseIndex + i) % N];
-                return retVel;
-            }
-        }
+    public Value get(Key key) {
         return null;
     }
 
+    /**
+     * determines if the hash table contains a key-value pair with Key equal to key
+     *
+     * @param key the key to test for
+     * @returns true if such a key-value pair is present, false otherwise
+     */
     @Override
-    public synchronized boolean containsKey(Key key) {
-        boolean contains = this.get(key) != null;
-        return contains;
-    }
-
-    private void resizeArray() {
-        N *= 2;
-        Key[] oldKeys = keys;
-        Value[] oldValues = values;
-        keys = (Key[]) new Object[N];
-        values = (Value[]) new Object[N];
-        for (int i = 0; i < keys.length; i++)
-            this.put(oldKeys[i], oldValues[i]);
+    public boolean containsKey(Key key) {
+        return false;
     }
 }

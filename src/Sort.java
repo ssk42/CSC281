@@ -1,3 +1,5 @@
+import java.awt.SystemTray;
+
 /**
  * @author knappa
  * @version 1.0
@@ -50,26 +52,77 @@ public class Sort {
         }
     }
 
+
+    public static void mergeSort(int[] array) {
+        int[] tempArray = new int[array.length];
+        mergeSortRecursive(array, tempArray,0,array.length);
+    }
+
+    private static void mergeSortRecursive(int[] array,
+                                           int[] tempArray,
+                                           int low, int high) {
+        int mid = (low+high)/2;
+
+        // sort the two sides
+        mergeSortRecursive(array, tempArray,low,mid);
+        mergeSortRecursive(array, tempArray,mid+1,high);
+
+        // copy the region into the temporary array
+        copyArray(array, tempArray, low,high);
+
+        // merge the temporary array back into the array
+        int lowIndex = low, highIndex = mid + 1;
+        int destinationIndex = low;
+
+        while (destinationIndex < high
+                && lowIndex < mid
+                && highIndex < high) {
+            if (tempArray[lowIndex] < tempArray[highIndex]) {
+                array[destinationIndex] = tempArray[lowIndex];
+                lowIndex++;
+                destinationIndex++;
+            } else {
+                array[destinationIndex] = tempArray[highIndex];
+                highIndex++;
+                destinationIndex++;
+            }
+        }
+
+        if(lowIndex < mid) {
+            System.arraycopy(tempArray, lowIndex,array, destinationIndex, mid-lowIndex);
+        } else if(highIndex < high) {
+            System.arraycopy(tempArray, highIndex,array, destinationIndex, high-highIndex);
+        }
+
+    }
+
+    private static void copyArray(int[] array, int[] tempArray, int low, int high) {
+        System.arraycopy(array,low,tempArray,low,high-low);
+    }
+
+
+
     public static void main(String[] args) {
 
-        int[] array = RandomArrayGenerator.randomIntArray(SIZE, MAGNITUDE, false);
-
-        /****************************/
-        System.out.println("original array:");
-        for (int i = 0; i < SIZE; i++) {
-            System.out.print(array[i] + " ");
-        }
-        System.out.println();
-
-        /****************************/
-        // sort the array
-
-        /***************************/
-        System.out.println("sorted array:");
-        for (int i = 0; i < SIZE; i++) {
-            System.out.print(array[i] + " ");
-        }
-        System.out.println();
+//
+//        int[] array = RandomArrayGenerator.randomIntArray(SIZE, MAGNITUDE, false);
+//
+//        /****************************/
+//        System.out.println("original array:");
+//        for (int i = 0; i < SIZE; i++) {
+//            System.out.print(array[i] + " ");
+//        }
+//        System.out.println();
+//
+//        /****************************/
+//        // sort the array
+//
+//        /***************************/
+//        System.out.println("sorted array:");
+//        for (int i = 0; i < SIZE; i++) {
+//            System.out.print(array[i] + " ");
+//        }
+//        System.out.println();
 
 
     }

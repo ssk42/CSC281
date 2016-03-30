@@ -55,6 +55,10 @@ public class NetworkDiscovery {
             }
         } catch (SocketException ignored) {}
 
+        System.out.println("host addresses: ");
+        for (InetAddress address : hostAddresses) System.out.println(address);
+        System.out.println();
+
         /* find the max MTU on our (valid, active, non-loopback - if appropriate) interfaces */
         int maxMTU = 0;
         try {
@@ -225,8 +229,8 @@ public class NetworkDiscovery {
                                 }
                             } catch (IOException ignored) { }
 
-                            /* wait one half second so we don't flood the network */
-                            try { Thread.sleep(500); } catch (InterruptedException ignored) { }
+                            /* wait one second so we don't flood the network */
+                            try { Thread.sleep(1000); } catch (InterruptedException ignored) { }
 
                         } while (broadcasting);
                         /* cleanup */
@@ -242,7 +246,8 @@ public class NetworkDiscovery {
 
                     String message = new String(receivePacket.getData()).trim();
                     System.out.println("received: " + message +
-                            " from:" + receivePacket.getAddress());
+                            " from:" + receivePacket.getAddress() +
+                            (hostAddresses.contains(receivePacket.getAddress()) ? " (us)" : ""));
                     if (message.equals(ACK)) {
                         serverAddresses.add(receivePacket.getAddress());
                         System.out.println("found server: " + receivePacket.getAddress());
@@ -292,7 +297,8 @@ public class NetworkDiscovery {
                 /* determine if this is a packet from someone else (if appropriate), containing the signal */
                 String message = new String(packet.getData()).trim();
                 System.out.println("received packet: " + message +
-                        " from: " + packet.getAddress());
+                        " from: " + packet.getAddress() +
+                        (hostAddresses.contains(packet.getAddress()) ? " (us)" : ""));
                 if (message.equals(SYN) && !hostAddresses.contains(packet.getAddress())) {
 
                     /* send ack */

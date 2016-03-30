@@ -1,7 +1,8 @@
 package edu.american;
 
 /**
- * Created by knappa on 3/28/16.
+ * @author knappa
+ * @version 1.0
  */
 public class ThreadingExample {
 

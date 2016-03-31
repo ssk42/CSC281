@@ -6,6 +6,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +30,8 @@ public class NetworkDiscovery {
     private Thread serverFinderThread;
     private boolean broadcasting;
     private ServerFinder serverFinder;
+    private ArrayList<ServerListener> serverListeners = new ArrayList<>();
+    private ArrayList<ClientListener> clientListeners = new ArrayList<>();
 
     /**
      * Construct a class to find server/client/peers for some network service
@@ -77,7 +80,6 @@ public class NetworkDiscovery {
         MTU = Math.max(maxMTU, 1500);
     }
 
-
     /**
      * testing
      *
@@ -88,15 +90,15 @@ public class NetworkDiscovery {
             NetworkDiscovery networkDiscovery = new NetworkDiscovery(8888, "TEST");
             try {
                 if (args[0].equals("server")) {
-                    networkDiscovery.startListening();
+                    networkDiscovery.startListeningForClients();
                     Thread.sleep(60_000);
-                    networkDiscovery.stopListening();
-                    networkDiscovery.foundClientAddresses().forEach(System.out::println);
+                    networkDiscovery.stopListeningForClients();
+                    networkDiscovery.clientAddresses().forEach(System.out::println);
                 } else if (args[0].equals("client")) {
                     networkDiscovery.startBroadcastingForServers();
                     Thread.sleep(60_000);
-                    networkDiscovery.stopBroadcasting();
-                    networkDiscovery.foundServerAddresses().forEach(System.out::println);
+                    networkDiscovery.stopBroadcastingForServers();
+                    networkDiscovery.serverAddresses().forEach(System.out::println);
                 }
             } catch (InterruptedException ignored) { }
         } else {
@@ -107,7 +109,7 @@ public class NetworkDiscovery {
     /**
      * start listening for clients
      */
-    public void startListening() {
+    public void startListeningForClients() {
         listening = true;
         if (listeningThread != null) {
             listeningThread.interrupt();
@@ -118,11 +120,10 @@ public class NetworkDiscovery {
         }
     }
 
-
     /**
      * stop listening for clients
      */
-    public void stopListening() {
+    public void stopListeningForClients() {
         listening = false;
         listeningThread.interrupt();
     }
@@ -130,7 +131,7 @@ public class NetworkDiscovery {
     /**
      * @return a set containing the current found clients - this set is not updated when new clients are found
      */
-    public Set<InetAddress> foundClientAddresses() {
+    public Set<InetAddress> clientAddresses() {
         /* return a copy */
         Set<InetAddress> foundAddresses = new HashSet<InetAddress>(clientAddresses.size());
         foundAddresses.addAll(clientAddresses);
@@ -164,7 +165,7 @@ public class NetworkDiscovery {
     /**
      * stop searching for servers
      */
-    public void stopBroadcasting() {
+    public void stopBroadcastingForServers() {
         broadcasting = false;
         serverFinderThread.interrupt();
     }
@@ -172,8 +173,24 @@ public class NetworkDiscovery {
     /**
      * @return a set containing the current found servers - this set is not updated when new servers are found
      */
-    public Set<InetAddress> foundServerAddresses() {
+    public Set<InetAddress> serverAddresses() {
         return serverAddresses;
+    }
+
+    public void addServerListener(ServerListener listener) {
+        serverListeners.add(listener);
+    }
+
+    public void removeServerListener(ServerListener listener) {
+        serverListeners.remove(listener);
+    }
+
+    public void addClientListener(ClientListener listener) {
+        clientListeners.add(listener);
+    }
+
+    public void removeClientListener(ClientListener listener) {
+        clientListeners.remove(listener);
     }
 
     /**
@@ -249,9 +266,16 @@ public class NetworkDiscovery {
                             " from:" + receivePacket.getAddress() +
                             (hostAddresses.contains(receivePacket.getAddress()) ? " (us)" : ""));
                     if (message.equals(ACK)) {
+
+                        /* add to list */
                         serverAddresses.add(receivePacket.getAddress());
                         System.out.println("found server: " + receivePacket.getAddress());
                         numServersToFind--;
+
+                        /* notify listeners */
+                        for (ServerListener listener : serverListeners)
+                            listener.onServerFound(receivePacket.getAddress());
+
                     }
                 }
 
@@ -316,6 +340,11 @@ public class NetworkDiscovery {
                     /* record client */
                     clientAddresses.add(packet.getAddress());
                     System.out.println("found client: " + packet.getAddress());
+
+                    /* notify listeners */
+                    for (ClientListener listener : clientListeners) {
+                        listener.onClientFound(packet.getAddress());
+                    }
                 }
             }
 

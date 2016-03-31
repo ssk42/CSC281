@@ -20,7 +20,7 @@ public class TalkServer implements ClientListener {
     private final Thread messageBroadcasterThread;
     private Set<PrintWriter> outputs;
     private Set<BufferedReader> inputs;
-    private NetworkDiscovery networkDiscovery;
+    //private NetworkDiscovery networkDiscovery;
 
     public TalkServer() throws IOException {
         outputs = new HashSet<>();
@@ -34,9 +34,11 @@ public class TalkServer implements ClientListener {
         messageBroadcasterThread = new Thread(new MessageBroadcaster());
         messageBroadcasterThread.start();
 
+        /*
         networkDiscovery = new NetworkDiscovery(PORT, "Talk");
         networkDiscovery.addClientListener(this);
         networkDiscovery.startListeningForClients();
+        */
     }
 
     public static void main(String[] args) throws IOException {

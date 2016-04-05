@@ -13,7 +13,7 @@ public class CodonConverter {
         HashTable<Codon, String> codonTable = new MyHashTable<>();
         populateHashTable(codonTable);
 
-        System.out.println(codonTable.get(new Codon("ATG")));
+        //System.out.println(codonTable.get(new Codon("ATG")));
 
         FileReader reader = new FileReader("res/ecoli.txt");
 

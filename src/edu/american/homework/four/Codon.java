@@ -54,7 +54,27 @@ public class Codon {
     }
 
     public int hashCode() {
-        return 0;
+        int retVal = 0;
+        for (int i = 0; i < 3; i++) {
+            retVal *= 4;
+            switch (codon[i]) {
+                case 'A':
+                    retVal += 0;
+                    break;
+                case 'C':
+                    retVal += 1;
+                    break;
+                case 'G':
+                    retVal += 2;
+                    break;
+                case 'T':
+                    retVal += 3;
+                    break;
+                default:
+                    System.out.println("Should never arrive here");
+            }
+        }
+        return retVal;
     }
 
     @Override
@@ -62,6 +82,7 @@ public class Codon {
         return obj instanceof Codon && equals((Codon) obj);
     }
 
+    @Override
     public String toString() { return new String(codon); }
 
     public boolean equals(Codon other) {

@@ -39,7 +39,7 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
     public void put(Key key, Value value) {
         //System.out.println("key="+key+" value="+value);
         if (numberStored >= N) resizeArray();
-        int index = key.hashCode() % N;
+        int index = ((key.hashCode() % N)+N)%N;
         // stop searching forward when we either reach an empty space or
         // if we reach an already existing insertion of this key
         while (keys[index] != null && !keys[index].equals(key))
@@ -51,7 +51,7 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
 
     @Override
     public Value get(Key key) {
-        int baseIndex = key.hashCode() % N;
+        int baseIndex = ((key.hashCode() % N)+N)%N;
         for (int i = 0; i < N; i++) {
             if (keys[(baseIndex + i) % N] == null) {
                 return null;

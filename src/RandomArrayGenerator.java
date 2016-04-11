@@ -1,5 +1,3 @@
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * A class consisting of static methods which generate random arrays
  *
@@ -15,31 +13,14 @@ public class RandomArrayGenerator {
      */
     public static void main(String[] args) {
 
+        /*
         for (double d : randomDoubleArray(10, 1.0, true))
             System.out.println(d);
 
         System.out.println();
+        */
 
-        //noinspection UnusedAssignment
-        boolean assertOn = false;
-        //noinspection AssertWithSideEffects,ConstantConditions
-        assert assertOn = true; // assigns true if assertions are on.
-
-        //noinspection ConstantConditions
-        if (assertOn) {
-            // only test assertions if assertions are turned on
-            try {
-                // should fail the assertion
-                for (int i : randomIntArray(1000, 100, true))
-                    System.out.println(i);
-            } catch (AssertionError assertionError) {
-                assertionError.printStackTrace();
-            }
-        }
-
-        System.out.println();
-
-        for (int i : randomSortedIntArray(100, 1000))
+        for (int i : randomSortedIntArray(100, 1000, true))
             System.out.println(i);
 
     }
@@ -52,12 +33,13 @@ public class RandomArrayGenerator {
      * @param entryMagnitude maximum norm of generated entries
      * @return generated array, if possible. {@code null} otherwise
      */
-    @SuppressWarnings("UnusedParameters")
-    public static int[] randomSortedIntArray(int size, int entryMagnitude) {
+    public static int[] randomSortedIntArray(int size, int entryMagnitude, boolean uniqueEntries) {
 
-        throw new NotImplementedException();
+        int[] array = randomIntArray(size, entryMagnitude, uniqueEntries);
 
-        // TODO: implement this
+        Sort.mergeSort(array);
+
+        return array;
 
     }
 

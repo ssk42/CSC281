@@ -11,6 +11,7 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
     private Key[] keys;
     private Value[] values;
 
+
     public MyHashTable() {
         N = 16;
         numberStored = 0;
@@ -35,11 +36,27 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
 
     }
 
+    public Key[] getKeyArray() {
+        Key[] keyCopy = (Key[]) new Object[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            keyCopy[i] = (Key) keys[i];
+        }
+        return keyCopy;
+    }
+
+    public Value[] getValueArray() {
+        Value[] valueCopy = (Value[]) new Object[values.length];
+        for (int i = 0; i < values.length; i++) {
+            valueCopy[i] = (Value) values[i];
+        }
+        return valueCopy;
+    }
+
     @Override
     public void put(Key key, Value value) {
         //System.out.println("key="+key+" value="+value);
         if (numberStored >= N) resizeArray();
-        int index = ((key.hashCode() % N)+N)%N;
+        int index = ((key.hashCode() % N) + N) % N;
         // stop searching forward when we either reach an empty space or
         // if we reach an already existing insertion of this key
         while (keys[index] != null && !keys[index].equals(key))
@@ -51,7 +68,7 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
 
     @Override
     public Value get(Key key) {
-        int baseIndex = ((key.hashCode() % N)+N)%N;
+        int baseIndex = ((key.hashCode() % N) + N) % N;
         for (int i = 0; i < N; i++) {
             if (keys[(baseIndex + i) % N] == null) {
                 return null;

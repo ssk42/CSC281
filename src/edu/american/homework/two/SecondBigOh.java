@@ -9,18 +9,21 @@ public class SecondBigOh {
 
     public static void main(String[] args) {
 
-        for (int N = 0; N < 2000; N++) {
+        for (int N = 0; N < 10000; N++) {
             System.out.println(sumOfTriangles(N)+": "+lg(sumOfTriangles(N))/lg(N));
         }
 
     }
 
-    public static int sumOfTriangles(int N) {
-        int sum = 0;
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < i; j++)
-                for (int k = 0; k < j; k++)
+    public static long sumOfTriangles(int N) {
+        long sum = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < i; j++) {
+                for (int k = 0; k < j; k++) {
                     sum++;
+                }
+            }
+        }
         return sum;
     }
 

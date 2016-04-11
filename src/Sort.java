@@ -59,7 +59,6 @@ public class Sort {
     private static void mergeSortRecursive(int[] array,
                                            int[] tempArray,
                                            int low, int high) {
-
         if (low == high) return; // length 1 arrays are sorted
 
         int mid = (low + high) / 2;
@@ -126,7 +125,6 @@ public class Sort {
             System.out.print(array[i] + " ");
         }
         System.out.println();
-
-
     }
+
 }

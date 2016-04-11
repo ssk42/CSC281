@@ -7,33 +7,48 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * @author TODO: add your name
+ * @author knappa
+ * @version 1.0
  */
 public class LinkedListBackedStack<Item> implements Stack<Item> {
+
+    private class ListNode {
+        Item data;
+        ListNode next;
+    }
+
+    private ListNode top;
 
     public static void main(String[] args) {
         // TODO: add test code
     }
 
     public LinkedListBackedStack() {
-        // TODO: implement this
+        // no-op
     }
 
     @Override
     public void push(Item i) {
-        // TODO: implement this
+        ListNode newTop = new ListNode();
+        newTop.data = i;
+        newTop.next = top;
+        top = newTop;
     }
 
     @Override
     public Item pop() throws StackEmptyException {
-        // TODO: implement this
-        return null;
+
+        if (isEmpty()) throw new StackEmptyException();
+
+        ListNode oldTop = top;
+        top = top.next;
+        return oldTop.data;
+
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO: implement this
-        return false;
+        return top == null;
     }
 
     /**
@@ -43,11 +58,16 @@ public class LinkedListBackedStack<Item> implements Stack<Item> {
      */
     @Override
     public Iterator<Item> iterator() {
-        // TODO: change if necessary
         return new StackOIterator();
     }
 
     private class StackOIterator implements Iterator<Item> {
+
+        ListNode current;
+
+        public StackOIterator() {
+            current = top;
+        }
 
         /**
          * Returns {@code true} if the iteration has more elements. (In other words, returns {@code true} if {@link #next}
@@ -57,8 +77,7 @@ public class LinkedListBackedStack<Item> implements Stack<Item> {
          */
         @Override
         public boolean hasNext() {
-            // TODO: implement this
-            return false;
+            return current != null;
         }
 
         /**
@@ -69,10 +88,12 @@ public class LinkedListBackedStack<Item> implements Stack<Item> {
          */
         @Override
         public Item next() {
-            if(!hasNext()) throw new NoSuchElementException();
+            if (!hasNext()) throw new NoSuchElementException();
 
-            // TODO: implement this
-            return null;
+            ListNode oldCurrent = current;
+            current = current.next;
+
+            return oldCurrent.data;
         }
     }
 

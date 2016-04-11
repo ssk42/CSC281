@@ -4,7 +4,7 @@
  */
 public class Sort {
 
-    static int SIZE = 10;
+    static int SIZE = 20;
     static int MAGNITUDE = 100;
 
     public static void selectionSort(int[] array) {
@@ -103,7 +103,6 @@ public class Sort {
 
 
     public static void main(String[] args) {
-
 
         int[] array = RandomArrayGenerator.randomIntArray(SIZE, MAGNITUDE, false);
 

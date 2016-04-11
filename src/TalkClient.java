@@ -28,7 +28,6 @@ public class TalkClient extends JPanel
     private final JTextPane textPane;
     private final JTextField textField;
     private final JTextField hostField;
-    //private final NetworkDiscovery networkDiscovery;
     private String serverHostname;
     private InetAddress serverAddress;
     private Thread inputThread;
@@ -37,12 +36,6 @@ public class TalkClient extends JPanel
     private Socket socket;
 
     public TalkClient(String defaultHostname) {
-
-        /*
-        networkDiscovery = new NetworkDiscovery(PORT, "Talk");
-        networkDiscovery.addServerListener(this);
-        networkDiscovery.startBroadcastingForServers();
-        */
 
         setLayout(new GridBagLayout());
 

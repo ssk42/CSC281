@@ -1,5 +1,3 @@
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * A class consisting of static methods which generate random arrays
  *
@@ -15,31 +13,14 @@ public class RandomArrayGenerator {
      */
     public static void main(String[] args) {
 
+        /*
         for (double d : randomDoubleArray(10, 1.0, true))
             System.out.println(d);
 
         System.out.println();
+        */
 
-        //noinspection UnusedAssignment
-        boolean assertOn = false;
-        //noinspection AssertWithSideEffects,ConstantConditions
-        assert assertOn = true; // assigns true if assertions are on.
-
-        //noinspection ConstantConditions
-        if (assertOn) {
-            // only test assertions if assertions are turned on
-            try {
-                // should fail the assertion
-                for (int i : randomIntArray(1000, 100, true))
-                    System.out.println(i);
-            } catch (AssertionError assertionError) {
-                assertionError.printStackTrace();
-            }
-        }
-
-        System.out.println();
-
-        for (int i : randomSortedIntArray(100, 1000))
+        for (int i : randomSortedIntArray(100, 1000, true))
             System.out.println(i);
 
     }
@@ -52,20 +33,20 @@ public class RandomArrayGenerator {
      * @param entryMagnitude maximum norm of generated entries
      * @return generated array, if possible. {@code null} otherwise
      */
-    @SuppressWarnings("UnusedParameters")
-    public static int[] randomSortedIntArray(int size, int entryMagnitude) {
+    public static int[] randomSortedIntArray(int size, int entryMagnitude, boolean uniqueEntries) {
 
-        throw new NotImplementedException();
+        int[] array = randomIntArray(size, entryMagnitude, uniqueEntries);
 
-        // TODO: implement this
+        Sort.mergeSort(array);
 
+        return array;
     }
 
 
     /**
-     * Generates an array of integers of length {@code size}. Each entry has norm at most {@code entryMagnitude}.
-     * All entries are unique if {@code uniqueEntries} is set to {@code true}. Thus, you must have
-     * {@code size <= 2*entryMagnitude} if {@code uniqueEntries} is set.
+     * Generates an array of integers of length {@code size}. Each entry has norm at most {@code entryMagnitude}. All
+     * entries are unique if {@code uniqueEntries} is set to {@code true}. Thus, you must have {@code size <=
+     * 2*entryMagnitude} if {@code uniqueEntries} is set.
      *
      * @param size           length of generated array
      * @param entryMagnitude maximum norm of generated entries
@@ -89,10 +70,27 @@ public class RandomArrayGenerator {
     }
 
     /**
-     * Generates an array of doubles of length {@code size}. Each entry has norm at most {@code entryMagnitude}.
-     * All entries are unique if {@code uniqueEntries} is set to {@code true}. Setting {@code uniqueEntries} to
-     * {@code true} may fail by infinite loop if {@code size} exhausts the number of doubles in the
-     * interval [-entryMagnitude,entryMagnitude)
+     * check to see if an element is already in the array
+     *
+     * @param top      how far up to check
+     * @param array    array o check in
+     * @param checkVal value to check for
+     * @return {@code true} if value is in the array up to {@code top}
+     */
+    private static boolean intEntryPresent(int top, int[] array, int checkVal) {
+
+        for (int i = 0; i < top; i++)
+            if (array[i] == checkVal)
+                return true;
+
+        return false;
+    }
+
+    /**
+     * Generates an array of doubles of length {@code size}. Each entry has norm at most {@code entryMagnitude}. All
+     * entries are unique if {@code uniqueEntries} is set to {@code true}. Setting {@code uniqueEntries} to {@code true}
+     * may fail by infinite loop if {@code size} exhausts the number of doubles in the interval
+     * [-entryMagnitude,entryMagnitude)
      *
      * @param size           length of generated array
      * @param entryMagnitude maximum norm of generated entries
@@ -108,24 +106,6 @@ public class RandomArrayGenerator {
             while (uniqueEntries && doubleEntryPresent(i, array, array[i]));
 
         return array;
-    }
-
-
-    /**
-     * check to see if an element is already in the array
-     *
-     * @param top      how far up to check
-     * @param array    array o check in
-     * @param checkVal value to check for
-     * @return {@code true} if value is in the array up to {@code top}
-     */
-    private static boolean intEntryPresent(int top, int[] array, int checkVal) {
-
-        for (int i = 0; i < top; i++)
-            if (array[i] == checkVal)
-                return true;
-
-        return false;
     }
 
     /**

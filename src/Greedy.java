@@ -65,7 +65,7 @@ public class Greedy extends GraphDisplay {
             components.union(minSource, minTarget);
             colored.add(minTarget);
 
-            try {Thread.sleep(500);} catch (InterruptedException ignored) { }
+            try {Thread.sleep(100);} catch (InterruptedException ignored) { }
 
             g2.fillOval(
                     (int) points[minTarget].x - pointRadius,

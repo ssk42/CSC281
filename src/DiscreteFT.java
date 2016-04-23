@@ -85,7 +85,6 @@ public class DiscreteFT extends JComponent {
         add(middleCButton, constraints);
         middleCButton.addActionListener(e -> addMiddleA());
 
-
         JButton chipmunkButton = new JButton("+1 Octave");
         constraints = new GridBagConstraints();
         constraints.gridx = 4;
@@ -105,7 +104,7 @@ public class DiscreteFT extends JComponent {
 
         JButton playbackButton = new JButton("Playback");
         constraints = new GridBagConstraints();
-        constraints.gridx = 5;
+        constraints.gridx = 6;
         constraints.gridy = 0;
         add(playbackButton);
         playbackButton.addActionListener(e -> playbackAudio());
@@ -157,18 +156,16 @@ public class DiscreteFT extends JComponent {
             double cosineSum = 0;
             double sineSum = 0;
             for (int j = 0; j < BUFFER_SIZE; j++) {
-                cosineSum += buffer[j]
-                        * Math.cos(-(2 * Math.PI * i * j) / (double) BUFFER_SIZE);
-                sineSum += buffer[j]
-                        * Math.sin(-(2 * Math.PI * i * j) / (double) BUFFER_SIZE);
+                cosineSum += buffer[j] * Math.cos(-(2 * Math.PI * i * j) / (double) BUFFER_SIZE);
+                sineSum += buffer[j] * Math.sin(-(2 * Math.PI * i * j) / (double) BUFFER_SIZE);
             }
             ftCosines[i] = cosineSum / (double) BUFFER_SIZE;
-            ftSines[i] = - sineSum / (double) BUFFER_SIZE;
+            ftSines[i] = sineSum / (double) BUFFER_SIZE;
+            //System.out.println(i + " " + ftSines[i]);
         }
         cosineFourierDisplay.updateImage();
         sineFourierDisplay.updateImage();
     }
-
 
     /**
      * captures audio from microphone to buffer
@@ -196,7 +193,7 @@ public class DiscreteFT extends JComponent {
     }
 
     /**
-     * kills all terms of Fourier transform which don't contribure to vocal range.
+     * kills all terms of Fourier transform which don't contribute to vocal range.
      */
     private void restrictToVocalRange() {
 
@@ -229,7 +226,7 @@ public class DiscreteFT extends JComponent {
             for (int j = 0; j < BUFFER_SIZE; j++) {
                 realSum += ftCosines[j]
                         * Math.cos(2 * Math.PI * i * j / (double) BUFFER_SIZE);
-                realSum += ftSines[j]
+                realSum -= ftSines[j]
                         * Math.sin(2 * Math.PI * i * j / (double) BUFFER_SIZE);
 
                 //imaginarySum += ftCosines[j] * Math.sin(2 * Math.PI * i * j / (double) BUFFER_SIZE);

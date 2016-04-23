@@ -1,5 +1,7 @@
 package edu.american.homework.four;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
+
 /**
  * @author knappa
  * @version 1.0
@@ -54,6 +56,7 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
 
     @Override
     public void put(Key key, Value value) {
+        if(key == null) throw new IllegalArgumentException();
         //System.out.println("key="+key+" value="+value);
         if (numberStored >= N) resizeArray();
         int index = ((key.hashCode() % N) + N) % N;
@@ -93,6 +96,7 @@ public class MyHashTable<Key, Value> implements HashTable<Key, Value> {
         values = (Value[]) new Object[N];
         numberStored = 0;
         for (int i = 0; i < oldKeys.length; i++)
-            this.put(oldKeys[i], oldValues[i]);
+            if (oldKeys[i] != null)
+                this.put(oldKeys[i], oldValues[i]);
     }
 }

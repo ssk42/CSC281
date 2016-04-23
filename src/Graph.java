@@ -41,7 +41,7 @@ public class Graph {
                     }
                 }
             }
-            minDist *= 1.1;
+            minDist *= 1.05;
         }
 
         return graph;

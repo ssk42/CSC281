@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 public abstract class GraphDisplay extends JComponent implements Runnable {
     protected final int pointRadius = 4;
     protected final int numVert = 200;
-    private final int xSize = 500, ySize = 400;
+    private final int xSize = 800, ySize = 600;
     protected final Graph graph;
     protected final BufferedImage bufferedImage;
     protected final Point2D.Float[] points;

@@ -70,13 +70,13 @@ public class Krushkal extends GraphDisplay {
         g2.setColor(Color.RED);
         g2.setStroke(new BasicStroke(4));
 
-        for (int i = 0; i < lengths.size(); i++) {
+        for (int i = 0; i < lengths.size() && components.count() > 2; i++) {
             int source = sources.get(i);
             int target = targets.get(i);
             if (!components.connected(source, target)) {
                 components.union(source, target);
 
-                try {Thread.sleep(200);} catch (InterruptedException ignored) { }
+                try {Thread.sleep(100);} catch (InterruptedException ignored) { }
 
                 g2.fillOval(
                         (int) points[source].x - pointRadius,
